@@ -1,0 +1,134 @@
+<div class="procurement-container">
+  <!-- Header with Navigation Tabs -->
+  <div class="header">
+    <div>
+      <h2>Procurement & Supplier Management</h2>
+      <p class="subtitle">Track purchase orders and vendor details</p>
+    </div>
+
+    <button class="primary-btn" (click)="openPoModal()">+ Create Purchase Order</button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'orders'" (click)="setTab('orders')">
+      📋 Purchase Orders
+    </button>
+    <button [class.active]="activeTab === 'suppliers'" (click)="setTab('suppliers')">
+      🏢 Suppliers
+    </button>
+  </div>
+
+  <!-- Loading & Error States -->
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading {{ activeTab === 'orders' ? 'purchase orders' : 'suppliers' }}...</p>
+  </div>
+
+  <div *ngIf="errorMessage && !isLoading" class="error-alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Purchase Orders Table -->
+  <div *ngIf="!isLoading && !errorMessage && activeTab === 'orders'" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>PO Number</th>
+          <th>Supplier Name</th>
+          <th>Expected Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let po of purchaseOrders">
+          <td>#{{ po.id }}</td>
+          <td>
+            <span class="po-badge">{{ po.poNumber }}</span>
+          </td>
+          <td class="bold-text">{{ po.supplierName }}</td>
+          <td>{{ po.expectedDate | date: 'mediumDate' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="po.status.toLowerCase()">
+              {{ po.status }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="purchaseOrders.length === 0">
+          <td colspan="5" class="no-data">No purchase orders found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Suppliers Table -->
+  <div *ngIf="!isLoading && !errorMessage && activeTab === 'suppliers'" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Supplier Name</th>
+          <th>Contact Person</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sup of suppliers">
+          <td>#{{ sup.id }}</td>
+          <td class="bold-text">{{ sup.name }}</td>
+          <td>{{ sup.contactPerson }}</td>
+          <td>{{ sup.email }}</td>
+          <td>{{ sup.phone }}</td>
+          <td class="address-col">{{ sup.address }}</td>
+        </tr>
+        <tr *ngIf="suppliers.length === 0">
+          <td colspan="6" class="no-data">No supplier records found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Create PO Modal -->
+  <div *ngIf="showPoModal" class="modal-backdrop">
+    <div class="modal-card">
+      <h3>Create New Purchase Order</h3>
+
+      <div class="form-group">
+        <label>PO Number</label>
+        <input type="text" [(ngModel)]="newPo.poNumber" readonly />
+      </div>
+
+      <div class="form-group">
+        <label>Supplier Name</label>
+        <input
+          type="text"
+          [(ngModel)]="newPo.supplierName"
+          placeholder="e.g., Global Tech Logistics"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Expected Delivery Date</label>
+        <input type="date" [(ngModel)]="newPo.expectedDate" required />
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select [(ngModel)]="newPo.status">
+          <option value="DRAFT">DRAFT</option>
+          <option value="SUBMITTED">SUBMITTED</option>
+          <option value="RECEIVED">RECEIVED</option>
+          <option value="CANCELLED">CANCELLED</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="closePoModal()">Cancel</button>
+        <button class="primary-btn" (click)="createPurchaseOrder()">Save PO</button>
+      </div>
+    </div>
+  </div>
+</div>

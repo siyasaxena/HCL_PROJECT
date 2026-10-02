@@ -1,0 +1,212 @@
+.transfer-container {
+  padding: 24px;
+  color: black;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+  }
+
+  .refresh-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: black;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .primary-btn {
+    background: #ff5252;
+    color: black;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover {
+      background: #e03e3e;
+    }
+  }
+
+  .loading-state,
+  .error-alert {
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .error-alert {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+  }
+
+  .table-card {
+    background: #1f2937;
+    border-radius: 12px;
+    overflow: hidden;
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+
+      th {
+        background-color: #111827;
+        padding: 14px 16px;
+        font-size: 12px;
+        color: #9ca3af;
+        text-transform: uppercase;
+      }
+
+      td {
+        padding: 14px 16px;
+        border-top: 1px solid #374151;
+        font-size: 14px;
+        color: #e5e7eb;
+
+        .transfer-badge {
+          background: #374151;
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-family: monospace;
+          font-size: 13px;
+        }
+
+        .wh-tag {
+          padding: 4px 8px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 500;
+
+          &.source {
+            background: rgba(107, 114, 128, 0.2);
+            color: #d1d5db;
+          }
+
+          &.target {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+          }
+        }
+
+        .bold-text {
+          font-weight: 600;
+        }
+
+        .status-badge {
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+
+          &.draft {
+            background: rgba(156, 163, 175, 0.2);
+            color: #d1d5db;
+          }
+          &.dispatched {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+          }
+          &.received {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+          }
+        }
+
+        &.no-data {
+          text-align: center;
+          color: #9ca3af;
+          padding: 24px;
+        }
+      }
+    }
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .modal-card {
+      background: #111827;
+      padding: 28px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid #374151;
+
+      h3 {
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+
+        label {
+          display: block;
+          font-size: 12px;
+          color: #9ca3af;
+          margin-bottom: 6px;
+        }
+
+        input,
+        select {
+          width: 100%;
+          padding: 10px;
+          background: #1f2937;
+          border: 1px solid #374151;
+          color: #f18484;
+          border-radius: 6px;
+          box-sizing: border-box;
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+
+        .cancel-btn {
+          background: transparent;
+          border: 1px solid #374151;
+          color: #9ca3af;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

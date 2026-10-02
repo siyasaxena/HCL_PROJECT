@@ -1,0 +1,65 @@
+<div class="inventory-container">
+  <div class="header">
+    <h2>Inventory Stock Level</h2>
+    <button class="refresh-btn" (click)="fetchInventory()">🔄 Refresh Data</button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Loading inventory items...</p>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="errorMessage && !isLoading" class="error-alert">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Table View -->
+  <div *ngIf="!isLoading && !errorMessage" class="table-card">
+    <table class="inventory-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>SKU</th>
+          <th>Product Name</th>
+          <th>Warehouse Code</th>
+          <th>Total Quantity</th>
+          <th>Reserved Qty</th>
+          <th>Available Qty</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of inventoryItems">
+          <td>#{{ item.id }}</td>
+          <td>
+            <span class="sku-badge">{{ item.sku }}</span>
+          </td>
+          <td class="product-name">{{ item.productName }}</td>
+          <td>
+            <span class="warehouse-tag">{{ item.warehouseCode }}</span>
+          </td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.reservedQuantity }}</td>
+          <td>
+            <strong [class.low-stock]="getAvailable(item) <= 5">
+              {{ getAvailable(item) }}
+            </strong>
+          </td>
+          <td>
+            <span
+              class="status-badge"
+              [class.in-stock]="getAvailable(item) > 0"
+              [class.out-of-stock]="getAvailable(item) <= 0"
+            >
+              {{ getAvailable(item) > 0 ? 'In Stock' : 'Out of Stock' }}
+            </span>
+          </td>
+        </tr>
+        <tr *ngIf="inventoryItems.length === 0">
+          <td colspan="8" class="no-data">No inventory stock records found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

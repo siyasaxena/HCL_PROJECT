@@ -1,0 +1,167 @@
+<header
+  *ngIf="!isAuthPage()"
+  style="
+    background: linear-gradient(135deg, #4f46e5, #7c3aed, #db2777);
+    padding: 12px 24px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  "
+>
+  <div
+    style="
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    "
+  >
+    <!-- Brand Logo & Name -->
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div
+        style="
+          background: rgba(255, 255, 255, 0.2);
+          padding: 8px 12px;
+          border-radius: 10px;
+          font-weight: bold;
+          font-size: 18px;
+        "
+      >
+        📦
+      </div>
+      <div>
+        <span style="font-size: 18px; font-weight: 800; display: block; line-height: 1.2"
+          >Retail Inventory</span
+        >
+        <span
+          style="
+            font-size: 10px;
+            color: #fbcfe8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+          "
+          >Enterprise Hub</span
+        >
+      </div>
+    </div>
+
+    <!-- Nav Links -->
+    <nav
+      style="
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 4px 8px;
+        border-radius: 12px;
+      "
+    >
+      <a
+        routerLink="/products"
+        routerLinkActive="active-tab"
+        style="
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          color: white;
+        "
+      >
+        📦 Products
+      </a>
+      <a
+        routerLink="/inventory"
+        routerLinkActive="active-tab"
+        style="
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          color: white;
+        "
+      >
+        📊 Inventory Stock
+      </a>
+      <a
+        routerLink="/orders"
+        routerLinkActive="active-tab"
+        style="
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          color: white;
+        "
+      >
+        🛒 Sales Orders
+      </a>
+      <a
+        routerLink="/transfers"
+        routerLinkActive="active-tab"
+        style="
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          color: white;
+        "
+      >
+        🔄 Transfers
+      </a>
+      <a
+        routerLink="/procurement"
+        routerLinkActive="active-tab"
+        style="
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          color: white;
+        "
+      >
+        📋 Procurement
+      </a>
+      <a
+        routerLink="/warehouses"
+        routerLinkActive="active-tab"
+        style="
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          text-decoration: none;
+          color: white;
+        "
+      >
+        🏭 Warehouses
+      </a>
+    </nav>
+
+    <!-- Logout Button -->
+    <button
+      (click)="logout()"
+      style="
+        background: #f43f5e;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      "
+    >
+      Logout
+    </button>
+  </div>
+</header>
+
+<main style="max-width: 1280px; margin: 20px auto; padding: 0 24px">
+  <router-outlet></router-outlet>
+</main>

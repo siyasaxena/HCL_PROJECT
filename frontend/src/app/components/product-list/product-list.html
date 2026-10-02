@@ -1,0 +1,133 @@
+<div class="container my-4">
+  <!-- Header & Add Button -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Inventory Catalog</h2>
+    <button class="btn btn-primary" (click)="openAddModal()">+ Add Product</button>
+  </div>
+
+  <!-- Search & Category Filter Bar -->
+  <div class="row mb-3">
+    <div class="col-md-6 mb-2">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search by SKU or Name..."
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+    <div class="col-md-4 mb-2">
+      <select class="form-select" [(ngModel)]="selectedCategoryId">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Inventory Table -->
+  <table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+      <tr>
+        <th>SKU</th>
+        <th>Name</th>
+        <th>Price ($)</th>
+        <th>Reorder Level</th>
+        <th>Reorder Qty</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of filteredProducts">
+        <td>{{ product.sku }}</td>
+        <td>{{ product.name }}</td>
+        <td>${{ product.unitPrice | number: '1.2-2' }}</td>
+        <td>
+          <span class="badge" [ngClass]="product.reorderLevel <= 10 ? 'bg-danger' : 'bg-success'">
+            {{ product.reorderLevel }}
+            <span *ngIf="product.reorderLevel <= 10"> (Low Stock)</span>
+          </span>
+        </td>
+        <td>{{ product.reorderQuantity }}</td>
+        <td>
+          <button class="btn btn-warning btn-sm me-2" (click)="openEditModal(product)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="filteredProducts.length === 0">
+        <td colspan="6" class="text-center text-muted">No products found.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Add / Edit Product Modal -->
+  <div *ngIf="showModal" class="modal-backdrop-custom">
+    <div class="modal-dialog-custom">
+      <h3 class="mb-3">{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h3>
+
+      <form (ngSubmit)="saveProduct()">
+        <div class="form-group mb-2">
+          <label>SKU</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newProduct.sku"
+            name="sku"
+            required
+          />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Product Name</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newProduct.name"
+            name="name"
+            required
+          />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Unit Price ($)</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="newProduct.unitPrice"
+            name="unitPrice"
+            required
+          />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Reorder Level</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="newProduct.reorderLevel"
+            name="reorderLevel"
+            required
+          />
+        </div>
+
+        <div class="form-group mb-3">
+          <label>Reorder Quantity</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="newProduct.reorderQuantity"
+            name="reorderQuantity"
+            required
+          />
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-success">
+            {{ isEditMode ? 'Update Product' : 'Save Product' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

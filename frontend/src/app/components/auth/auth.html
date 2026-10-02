@@ -1,0 +1,136 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <!-- Left Hero Section -->
+    <div class="hero-section">
+      <div class="hero-header">
+        <p>Smart inventory tracking & order management for modern retail.</p>
+      </div>
+      <div class="hero-body">
+        <h1>Manage<br />your inventory</h1>
+        <div class="hero-illustration">
+          <div class="stat-card">
+            <span class="stat-label">Total Stock Value</span>
+            <span class="stat-value">$128,450.00</span>
+            <div class="stat-bar">
+              <div class="bar-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-footer">
+        <span>© 2026 RetailInventory Inc.</span>
+      </div>
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="form-section">
+      <!-- Top Navigation -->
+      <div class="form-top-nav">
+        <div class="brand">
+          <div class="logo-icon"></div>
+          <span class="brand-name">zinklit</span>
+        </div>
+        <button class="nav-switch-btn" (click)="toggleMode(!isSignUp)">
+          <i class="bi" [ngClass]="isSignUp ? 'bi-box-arrow-in-right' : 'bi-person-plus'"></i>
+          {{ isSignUp ? 'Sign In' : 'Sign Up' }}
+        </button>
+      </div>
+
+      <!-- Form Body -->
+      <div class="form-container">
+        <h2>{{ isSignUp ? 'Create Account' : 'Sign In' }}</h2>
+
+        <!-- Error Alert Display -->
+        <div
+          *ngIf="errorMessage"
+          class="alert alert-danger mb-3"
+          style="color: #dc3545; font-size: 0.85rem; margin-bottom: 1rem"
+        >
+          {{ errorMessage }}
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form *ngIf="!isSignUp" (ngSubmit)="login()">
+          <div class="input-group">
+            <input
+              type="text"
+              placeholder="Email or Username"
+              [(ngModel)]="loginData.username"
+              name="loginUsername"
+              required
+            />
+          </div>
+
+          <div class="input-group password-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Password"
+              [(ngModel)]="loginData.password"
+              name="loginPassword"
+              required
+            />
+            <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+
+          <div class="forgot-link">
+            <a href="javascript:void(0)">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="submit-btn">Sign In <span>→</span></button>
+        </form>
+
+        <!-- SIGNUP FORM (Username, Work Email & Password Only) -->
+        <!-- SIGNUP FORM -->
+        <form *ngIf="isSignUp" (submit)="$event.preventDefault(); onSignUp()">
+          <div class="input-group">
+            <input
+              type="text"
+              placeholder="Username"
+              [(ngModel)]="signUpData.username"
+              name="username"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <input
+              type="email"
+              placeholder="Work Email"
+              [(ngModel)]="signUpData.email"
+              name="email"
+              required
+            />
+          </div>
+
+          <div class="input-group password-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="Password"
+              [(ngModel)]="signUpData.password"
+              name="signUpPassword"
+              required
+            />
+            <button type="button" class="eye-btn" (click)="togglePasswordVisibility()">
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+
+          <!-- Updated to include direct click handler -->
+          <button type="button" class="submit-btn" (click)="onSignUp()">
+            Create Account <span>→</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Bottom Links -->
+      <div class="form-footer">
+        <a href="javascript:void(0)">Contact Us</a>
+        <select class="lang-select">
+          <option>English</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
