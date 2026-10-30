@@ -1,7 +1,7 @@
 package inventory.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "purchase_orders")
@@ -11,21 +11,12 @@ public class PurchaseOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
     private String poNumber;
-
     private String supplierName;
-    private LocalDate expectedDate;
-    private String status; // DRAFT, SUBMITTED, RECEIVED, CANCELLED
-
-    public PurchaseOrder() {}
-
-    public PurchaseOrder(String poNumber, String supplierName, LocalDate expectedDate, String status) {
-        this.poNumber = poNumber;
-        this.supplierName = supplierName;
-        this.expectedDate = expectedDate;
-        this.status = status;
-    }
+    private Double totalAmount;
+    private String status;
+    
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -37,9 +28,12 @@ public class PurchaseOrder {
     public String getSupplierName() { return supplierName; }
     public void setSupplierName(String supplierName) { this.supplierName = supplierName; }
 
-    public LocalDate getExpectedDate() { return expectedDate; }
-    public void setExpectedDate(LocalDate expectedDate) { this.expectedDate = expectedDate; }
+    public Double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

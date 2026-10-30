@@ -8,33 +8,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/sales-orders") // ✅ Changed to a unique path
+@CrossOrigin(origins = "http://localhost:4200")
 public class SalesOrderController {
 
-    private final SalesOrderService orderService;
+    private final SalesOrderService salesOrderService;
 
-    public SalesOrderController(SalesOrderService orderService) {
-        this.orderService = orderService;
+    public SalesOrderController(SalesOrderService salesOrderService) {
+        this.salesOrderService = salesOrderService;
     }
 
     @GetMapping
     public ResponseEntity<List<SalesOrder>> getOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+        return ResponseEntity.ok(salesOrderService.getAllOrders());
     }
 
     @PostMapping
     public ResponseEntity<SalesOrder> createOrder(@RequestBody SalesOrder order) {
-        return ResponseEntity.ok(orderService.createOrder(order));
-    }
-
-    @PostMapping("/{id}/ship")
-    public ResponseEntity<SalesOrder> shipOrder(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(id, "SHIPPED"));
-    }
-
-    @PostMapping("/{id}/cancel")
-    public ResponseEntity<SalesOrder> cancelOrder(@PathVariable Long id) {
-        return ResponseEntity.ok(orderService.updateOrderStatus(id, "CANCELLED"));
+        return ResponseEntity.ok(salesOrderService.createOrder(order));
     }
 }

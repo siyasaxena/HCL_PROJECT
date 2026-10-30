@@ -16,20 +16,6 @@ public class InventoryStock {
     private Integer quantity;
     private Integer reservedQuantity;
 
-    public InventoryStock() {}
-
-    public InventoryStock(String sku, String productName, String warehouseCode, Integer quantity, Integer reservedQuantity) {
-        this.sku = sku;
-        this.productName = productName;
-        this.warehouseCode = warehouseCode;
-        this.quantity = quantity;
-        this.reservedQuantity = reservedQuantity;
-    }
-
-    public Integer getAvailableQuantity() {
-        return (quantity != null ? quantity : 0) - (reservedQuantity != null ? reservedQuantity : 0);
-    }
-
     // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

@@ -1,24 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
-export interface PurchaseOrder {
-  id?: number;
-  poNumber: string;
-  supplierName: string;
-  expectedDate: string;
-  status: 'DRAFT' | 'SUBMITTED' | 'RECEIVED' | 'CANCELLED';
-}
-
-export interface Supplier {
-  id?: number;
-  name: string;
-  contactPerson: string;
-  email: string;
-  phone: string;
-  address: string;
-}
+import { ProcurementService, PurchaseOrder } from '../../services/procurement';
 
 @Component({
   selector: 'app-procurement',
@@ -28,95 +11,65 @@ export interface Supplier {
   styleUrls: ['./procurement.scss'],
 })
 export class ProcurementComponent implements OnInit {
-  activeTab: 'orders' | 'suppliers' = 'orders';
-
   purchaseOrders: PurchaseOrder[] = [];
-  suppliers: Supplier[] = [];
+  isLoading: boolean = true;
+  activeTab: 'orders' | 'suppliers' = 'orders';
+  isModalOpen: boolean = false;
 
-  isLoading = false;
-  errorMessage = '';
-
-  // Modal / Form state for creating a Purchase Order
-  showPoModal = false;
-  newPo: PurchaseOrder = {
+  newPo: Partial<PurchaseOrder> = {
     poNumber: '',
     supplierName: '',
-    expectedDate: '',
-    status: 'DRAFT',
+    totalAmount: 0,
+    status: 'PENDING',
   };
 
-  private baseUrl = 'http://localhost:8080/api';
-
-  constructor(private http: HttpClient) {}
+  constructor(private procurementService: ProcurementService) {}
 
   ngOnInit(): void {
-    this.fetchData();
+    this.fetchPurchaseOrders();
   }
 
-  setTab(tab: 'orders' | 'suppliers'): void {
-    this.activeTab = tab;
-    this.fetchData();
-  }
-
-  fetchData(): void {
+  fetchPurchaseOrders(): void {
     this.isLoading = true;
-    this.errorMessage = '';
-
-    if (this.activeTab === 'orders') {
-      this.http.get<PurchaseOrder[]>(`${this.baseUrl}/purchase-orders`).subscribe({
-        next: (data) => {
-          this.purchaseOrders = data;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching purchase orders:', err);
-          this.errorMessage = 'Failed to load purchase orders.';
-          this.isLoading = false;
-        },
-      });
-    } else {
-      this.http.get<Supplier[]>(`${this.baseUrl}/suppliers`).subscribe({
-        next: (data) => {
-          this.suppliers = data;
-          this.isLoading = false;
-        },
-        error: (err) => {
-          console.error('Error fetching suppliers:', err);
-          this.errorMessage = 'Failed to load suppliers.';
-          this.isLoading = false;
-        },
-      });
-    }
-  }
-
-  openPoModal(): void {
-    this.newPo = {
-      poNumber: `PO-${Math.floor(1000 + Math.random() * 9000)}`,
-      supplierName: '',
-      expectedDate: '',
-      status: 'DRAFT',
-    };
-    this.showPoModal = true;
-  }
-
-  closePoModal(): void {
-    this.showPoModal = false;
-  }
-
-  createPurchaseOrder(): void {
-    if (!this.newPo.supplierName || !this.newPo.expectedDate) {
-      alert('Please fill in all required fields.');
-      return;
-    }
-
-    this.http.post<PurchaseOrder>(`${this.baseUrl}/purchase-orders`, this.newPo).subscribe({
-      next: () => {
-        this.closePoModal();
-        this.fetchData();
+    this.procurementService.getPurchaseOrders().subscribe({
+      next: (data) => {
+        this.purchaseOrders = data;
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error creating purchase order:', err);
-        alert('Failed to create Purchase Order.');
+        console.error('Error fetching purchase orders:', err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  switchTab(tab: 'orders' | 'suppliers'): void {
+    this.activeTab = tab;
+  }
+
+  openModal(): void {
+    this.newPo = {
+      poNumber: `PO-${Math.floor(10000 + Math.random() * 90000)}`,
+      supplierName: '',
+      totalAmount: 0,
+      status: 'PENDING',
+    };
+    this.isModalOpen = true;
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+  }
+
+  savePurchaseOrder(): void {
+    this.procurementService.createPurchaseOrder(this.newPo).subscribe({
+      next: () => {
+        this.closeModal();
+        this.fetchPurchaseOrders();
+      },
+      error: (err) => {
+        console.error('Error saving purchase order:', err);
+        alert('Failed to save purchase order.');
       },
     });
   }

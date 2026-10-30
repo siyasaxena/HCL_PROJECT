@@ -1,40 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
-export interface Warehouse {
-  id?: number;
-  code: string;
-  name: string;
-  location: string;
-  capacity: number;
-}
+import { WarehouseService, Warehouse } from '../../services/warehouse';
 
 @Component({
-  selector: 'app-warehouse',
+  selector: 'app-warehouses',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './warehouses.html',
   styleUrls: ['./warehouses.scss'],
 })
-export class WarehouseComponent implements OnInit {
+export class WarehousesComponent implements OnInit {
   warehouses: Warehouse[] = [];
-  isLoading = false;
-  errorMessage = '';
+  isLoading: boolean = true;
+  isModalOpen: boolean = false;
 
-  // Modal & Form State for Creating/Updating Warehouse
-  showModal = false;
   newWarehouse: Warehouse = {
     code: '',
     name: '',
     location: '',
-    capacity: 0,
+    address: '',
+    capacity: 5000,
+    managerName: '',
+    contactPhone: '',
   };
 
-  private apiUrl = 'http://localhost:8080/api/warehouses'; // Adjust matching your WarehouseController endpoint
-
-  constructor(private http: HttpClient) {}
+  constructor(private warehouseService: WarehouseService) {}
 
   ngOnInit(): void {
     this.fetchWarehouses();
@@ -42,16 +33,13 @@ export class WarehouseComponent implements OnInit {
 
   fetchWarehouses(): void {
     this.isLoading = true;
-    this.errorMessage = '';
-
-    this.http.get<Warehouse[]>(this.apiUrl).subscribe({
+    this.warehouseService.getWarehouses().subscribe({
       next: (data) => {
         this.warehouses = data;
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching warehouses:', err);
-        this.errorMessage = 'Failed to load warehouses. Please check backend connection.';
         this.isLoading = false;
       },
     });
@@ -62,29 +50,33 @@ export class WarehouseComponent implements OnInit {
       code: `WH-${Math.floor(100 + Math.random() * 900)}`,
       name: '',
       location: '',
-      capacity: 1000,
+      address: '',
+      capacity: 5000,
+      managerName: '',
+      contactPhone: '',
     };
-    this.showModal = true;
+    this.isModalOpen = true;
   }
 
   closeModal(): void {
-    this.showModal = false;
+    this.isModalOpen = false;
   }
 
-  createWarehouse(): void {
-    if (!this.newWarehouse.name || !this.newWarehouse.location) {
-      alert('Please fill in all required fields.');
+  saveWarehouse(): void {
+    if (!this.newWarehouse.name || !this.newWarehouse.code) {
+      alert('Please fill out Name and Code fields.');
       return;
     }
 
-    this.http.post<Warehouse>(this.apiUrl, this.newWarehouse).subscribe({
+    this.warehouseService.createWarehouse(this.newWarehouse).subscribe({
       next: () => {
         this.closeModal();
         this.fetchWarehouses();
       },
       error: (err) => {
-        console.error('Error creating warehouse:', err);
-        alert('Failed to save warehouse.');
+        console.error('Error saving warehouse:', err);
+        this.closeModal();
+        this.fetchWarehouses();
       },
     });
   }

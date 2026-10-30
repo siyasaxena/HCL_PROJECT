@@ -14,7 +14,7 @@ public class InventoryService {
     public InventoryService(InventoryStockRepository inventoryStockRepository) {
         this.inventoryStockRepository = inventoryStockRepository;
     }
-
+ 
     public List<InventoryStock> getAllItems() {
         return inventoryStockRepository.findAll();
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product';
@@ -19,18 +19,21 @@ export class ProductsComponent implements OnInit {
   isEditMode: boolean = false;
   selectedProductId: number | null = null;
 
-  // Form Model
-  newProduct: Product = {
+  newProduct: any = {
     sku: '',
     name: '',
+    category: '',
+    description: '',
     unitPrice: 0,
+    quantity: 10,
     reorderLevel: 10,
-    reorderQuantity: 50,
   };
 
-  // Search & Filter state
   searchTerm: string = '';
   selectedCategoryId: string = '';
+
+  // Inject ChangeDetectorRef to force the UI to update
+  private cdr = inject(ChangeDetectorRef);
 
   constructor(private productService: ProductService) {}
 
@@ -41,41 +44,26 @@ export class ProductsComponent implements OnInit {
 
   loadProducts(): void {
     this.productService.getProducts().subscribe({
-      next: (data) => (this.products = data),
-      error: () => {
-        // Fallback demo data if backend fails
-        if (this.products.length === 0) {
-          this.products = [
-            {
-              id: 1,
-              sku: 'PROD-101',
-              name: 'Wireless Optical Mouse',
-              unitPrice: 25.99,
-              reorderLevel: 10,
-              reorderQuantity: 50,
-            },
-            {
-              id: 2,
-              sku: 'PROD-102',
-              name: 'Wired Mouse',
-              unitPrice: 39.99,
-              reorderLevel: 5,
-              reorderQuantity: 20,
-            },
-          ];
-        }
+      next: (data) => {
+        this.products = data;
+        this.cdr.detectChanges(); // <-- Forces the HTML table to render immediately
+      },
+      error: (err) => {
+        console.error('Error fetching products:', err);
       },
     });
   }
 
   loadCategories(): void {
     this.productService.getCategories().subscribe({
-      next: (data) => (this.categories = data),
+      next: (data) => {
+        this.categories = data;
+        this.cdr.detectChanges();
+      },
       error: (err) => console.warn('Categories API unavailable:', err),
     });
   }
 
-  // Filtered getter for live table rendering
   get filteredProducts(): Product[] {
     return this.products.filter((product) => {
       const matchesSearch =
@@ -111,40 +99,25 @@ export class ProductsComponent implements OnInit {
 
   saveProduct(): void {
     if (this.isEditMode && this.selectedProductId) {
-      // 1. UPDATE EXISTING PRODUCT
-      const index = this.products.findIndex((p) => p.id === this.selectedProductId);
-      if (index !== -1) {
-        this.products[index] = { ...this.newProduct, id: this.selectedProductId };
-        this.products = [...this.products];
-      }
       this.closeModal();
-
       this.productService.updateProduct(this.selectedProductId, this.newProduct).subscribe({
-        next: () => console.log('Updated in backend successfully'),
-        error: (err) => console.warn('Backend update failed, kept local change:', err),
+        next: () => this.loadProducts(),
+        error: (err) => console.warn('Backend update failed:', err),
       });
     } else {
-      // 2. CREATE NEW PRODUCT
-      const productToAdd: Product = {
-        ...this.newProduct,
-        id: Date.now(),
-      };
-      this.products = [...this.products, productToAdd];
       this.closeModal();
-
       this.productService.createProduct(this.newProduct).subscribe({
-        next: () => console.log('Created in backend successfully'),
-        error: (err) => console.warn('Backend create failed, kept local copy:', err),
+        next: () => this.loadProducts(),
+        error: (err) => console.warn('Backend create failed:', err),
       });
     }
   }
 
   deleteProduct(id?: number): void {
     if (!id) return;
-    this.products = this.products.filter((p) => p.id !== id);
     this.productService.deleteProduct(id).subscribe({
-      next: () => console.log('Deleted from backend successfully'),
-      error: (err) => console.warn('Backend delete failed, removed locally:', err),
+      next: () => this.loadProducts(),
+      error: (err) => console.warn('Backend delete failed:', err),
     });
   }
 }

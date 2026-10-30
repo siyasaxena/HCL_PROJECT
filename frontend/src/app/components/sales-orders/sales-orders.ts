@@ -5,86 +5,78 @@ import { FormsModule } from '@angular/forms';
 
 export interface SalesOrder {
   id?: number;
-  orderNumber: string;
-  customerName: string;
-  totalAmount: number;
-  status: 'PENDING' | 'RESERVED' | 'SHIPPED' | 'CANCELLED';
   createdAt?: string;
+  customerName: string;
+  orderNumber: string;
+  status: string;
+  totalAmount: number;
 }
 
 @Component({
-  selector: 'app-sales-order',
+  selector: 'app-sales-orders',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './sales-orders.html',
   styleUrls: ['./sales-orders.scss'],
 })
 export class SalesOrderComponent implements OnInit {
-  salesOrders: SalesOrder[] = [];
-  isLoading = false;
+  orders: SalesOrder[] = [];
+  isLoading = true;
   errorMessage = '';
+  isModalOpen = false;
 
-  // Modal / Form state for creating a new Sales Order
-  showModal = false;
   newOrder: SalesOrder = {
-    orderNumber: '',
+    orderNumber: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
     customerName: '',
-    totalAmount: 0,
     status: 'PENDING',
+    totalAmount: 0,
   };
 
-  private apiUrl = 'http://localhost:8080/api/sales-orders'; // Update to match your SalesOrderController endpoint
+  private apiUrl = 'http://localhost:8080/api/sales-orders';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.fetchSalesOrders();
+    this.fetchOrders();
   }
 
-  fetchSalesOrders(): void {
+  fetchOrders(): void {
     this.isLoading = true;
-    this.errorMessage = '';
-
     this.http.get<SalesOrder[]>(this.apiUrl).subscribe({
       next: (data) => {
-        this.salesOrders = data;
+        this.orders = data;
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error fetching sales orders:', err);
-        this.errorMessage = 'Failed to load sales orders. Please check backend API.';
+        this.errorMessage = 'Failed to load sales orders. Please check backend service.';
         this.isLoading = false;
       },
     });
   }
 
-  openModal(): void {
+  openCreateModal(): void {
     this.newOrder = {
-      orderNumber: `SO-${Math.floor(10000 + Math.random() * 90000)}`,
+      orderNumber: 'ORD-' + Date.now(), // ✅ Guaranteed unique using current timestamp
       customerName: '',
-      totalAmount: 0,
       status: 'PENDING',
+      totalAmount: 0,
     };
-    this.showModal = true;
+    this.isModalOpen = true;
   }
 
   closeModal(): void {
-    this.showModal = false;
+    this.isModalOpen = false;
   }
 
-  createSalesOrder(): void {
-    if (!this.newOrder.customerName || this.newOrder.totalAmount <= 0) {
-      alert('Please provide valid customer details and total amount.');
-      return;
-    }
-
+  saveOrder(): void {
     this.http.post<SalesOrder>(this.apiUrl, this.newOrder).subscribe({
       next: () => {
-        this.closeModal();
-        this.fetchSalesOrders();
+        this.isModalOpen = false;
+        this.fetchOrders();
       },
       error: (err) => {
-        console.error('Error creating sales order:', err);
+        console.error('Error saving sales order:', err);
         alert('Failed to save sales order.');
       },
     });

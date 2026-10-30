@@ -89,6 +89,26 @@
         </div>
 
         <div class="form-group mb-2">
+          <label>Category</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newProduct.category"
+            name="category"
+          />
+        </div>
+
+        <div class="form-group mb-2">
+          <label>Description</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="newProduct.description"
+            name="description"
+          />
+        </div>
+
+        <div class="form-group mb-2">
           <label>Unit Price ($)</label>
           <input
             type="number"
@@ -100,23 +120,23 @@
         </div>
 
         <div class="form-group mb-2">
+          <label>Quantity</label>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="newProduct.quantity"
+            name="quantity"
+            required
+          />
+        </div>
+
+        <div class="form-group mb-3">
           <label>Reorder Level</label>
           <input
             type="number"
             class="form-control"
             [(ngModel)]="newProduct.reorderLevel"
             name="reorderLevel"
-            required
-          />
-        </div>
-
-        <div class="form-group mb-3">
-          <label>Reorder Quantity</label>
-          <input
-            type="number"
-            class="form-control"
-            [(ngModel)]="newProduct.reorderQuantity"
-            name="reorderQuantity"
             required
           />
         </div>

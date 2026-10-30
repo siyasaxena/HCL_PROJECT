@@ -35,7 +35,7 @@ export class TransferOrderComponent implements OnInit {
     status: 'DRAFT',
   };
 
-  private apiUrl = 'http://localhost:8080/api/transfer-orders'; // Update to match your TransferOrderController endpoint
+  private apiUrl = 'http://localhost:8080/api/transfers'; // Update to match your TransferOrderController endpoint
 
   constructor(private http: HttpClient) {}
 
@@ -86,10 +86,11 @@ export class TransferOrderComponent implements OnInit {
       return;
     }
 
-    this.http.post<TransferOrder>(this.apiUrl, this.newTransfer).subscribe({
+    // Use { responseType: 'text' as 'json' } to handle empty/text responses safely
+    this.http.post(this.apiUrl, this.newTransfer, { responseType: 'text' as 'json' }).subscribe({
       next: () => {
         this.closeModal();
-        this.fetchTransferOrders();
+        this.fetchTransferOrders(); // Refresh table immediately
       },
       error: (err) => {
         console.error('Error creating transfer order:', err);

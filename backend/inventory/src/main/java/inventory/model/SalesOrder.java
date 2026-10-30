@@ -11,24 +11,27 @@ public class SalesOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String orderNumber;
-
-    private String customerName;
-    private Double totalAmount;
-    private String status; // PENDING, RESERVED, SHIPPED, CANCELLED
-
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public SalesOrder() {
-        this.createdAt = LocalDateTime.now();
-    }
+    @Column(name = "customer_name")
+    private String customerName;
 
-    public SalesOrder(String orderNumber, String customerName, Double totalAmount, String status) {
+    @Column(name = "order_number")
+    private String orderNumber;
+
+    private String status;
+
+    @Column(name = "total_amount")
+    private Double totalAmount;
+
+    public SalesOrder() {}
+
+    public SalesOrder(String orderNumber, String customerName, String status, Double totalAmount) {
         this.orderNumber = orderNumber;
         this.customerName = customerName;
-        this.totalAmount = totalAmount;
         this.status = status;
+        this.totalAmount = totalAmount;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -36,18 +39,18 @@ public class SalesOrder {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getOrderNumber() { return orderNumber; }
-    public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     public String getCustomerName() { return customerName; }
     public void setCustomerName(String customerName) { this.customerName = customerName; }
 
-    public Double getTotalAmount() { return totalAmount; }
-    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
+    public String getOrderNumber() { return orderNumber; }
+    public void setOrderNumber(String orderNumber) { this.orderNumber = orderNumber; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(Double totalAmount) { this.totalAmount = totalAmount; }
 }
